@@ -1,36 +1,58 @@
 <template>
-  <div class="course-list">
-    <div class="course-card">
-      <h3>ชื่อคอร์ส: ...</h3>
-      <p>ราคา: ... บาท</p>
-      <button>เพิ่มในรายการโปรด</button>
-    </div>
-  </div>
+  <article class="course-card">
+    <img :src="course.image" :alt="course.title" class="course-image" />
+    <header class="course-content">
+      <h3>{{ course.title }}</h3>
+      <p>ราคา: {{ course.price }} บาท</p>
+    </header>
+    <button :disabled="disabled" @click="addFavorite">เพิ่มในรายการโปรด</button>
+  </article>
 </template>
 
 <script setup>
-// TODO: import { useFavoriteStore } แล้วเขียนฟังก์ชันเพิ่มคอร์สลง store
-// TODO: defineProps({ course: Object })
+import { useFavoriteStore } from "../stores/favorite";
+const favoriteStore = useFavoriteStore();
+
+const props = defineProps({
+  course: {
+    type: Object,
+    required: true,
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const addFavorite = () => {
+  favoriteStore.addFavorite({
+    id: props.course.id,
+    title: props.course.title,
+  });
+};
 </script>
 
 <style scoped>
-.course-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  max-width: 600px;
-  margin: auto;
-  padding: 16px;
-}
-
 .course-card {
   display: flex;
-  justify-content: space-between;
+  gap: 12px;
   align-items: center;
   border: 1px solid #ddd;
   border-radius: 8px;
   background: #fafafa;
   padding: 12px 16px;
+  margin-bottom: 12px;
+}
+
+.course-image {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.course-content {
+  flex: 1;
+  text-align: left;
 }
 
 h3 {
@@ -40,7 +62,7 @@ h3 {
 }
 
 p {
-  margin: 0;
+  margin: 6px 0 0;
   color: #555;
 }
 
@@ -55,5 +77,10 @@ button {
 
 button:hover {
   background-color: #2c9c6d;
+}
+
+button:disabled {
+  background-color: #b0b0b0;
+  cursor: not-allowed;
 }
 </style>

@@ -1,14 +1,25 @@
 <template>
-  <div class="page-container">
+  <section class="page-container">
     <h2>📋 Summary</h2>
-    <!-- TODO: ดึง username และ favorites.length จาก store -->
-    <p>ชื่อผู้ใช้: -</p>
-    <p>จำนวนคอร์สที่ถูกใจ: 0</p>
-  </div>
+    <p v-if="!hasSummaryData">ยังไม่มีข้อมูลการเลือกคอร์ส</p>
+    <section v-else>
+      <p>ชื่อผู้ใช้: {{ favoriteStore.username }}</p>
+      <p>จำนวนคอร์สที่ถูกใจ: {{ favoriteStore.favorites.length }}</p>
+    </section>
+    <RouterLink to="/">กลับไปหน้า Course</RouterLink>
+  </section>
 </template>
 
-<script setup>
-// TODO: import { useFavoriteStore }
+<script setup lang="ts">
+import { computed } from "vue";
+import { RouterLink } from "vue-router";
+import { useFavoriteStore } from "../stores/favorite";
+
+const favoriteStore = useFavoriteStore();
+const hasSummaryData = computed(
+  () =>
+    favoriteStore.username.trim().length > 0 && favoriteStore.favorites.length > 0,
+);
 </script>
 
 <style scoped>
